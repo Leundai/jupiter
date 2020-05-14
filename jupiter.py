@@ -2,6 +2,9 @@
 import os
 
 import discord
+import requests
+import io
+import aiohttp
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -33,5 +36,31 @@ async def on_message(message):
         # Send out a message with the name of the author
         # We are limited to only using local files unless we install some new library
         await message.channel.send(f'Hello!! {message.author.name}', file=discord.File('giphy.gif'))
+    elif message.content.startswith('!ragecat'):
+        # I added another gif, its pretty random xD
+        await message.channel.send(f'ahh type faster', file=discord.File('cat_typing.gif'))
+
+    elif message.content.startswith('!cat'):
+        # Sometimes random.cat gives us gifs
+        url = None
+        for _ in range(3):
+            try:
+                r = requests.get('http://aws.random.cat/meow')
+                r.raise_for_status()
+            except:
+                continue
+
+            url = r.json()['file']
+            if not url.endswith('.gif'):
+                break
+            else:
+                return message.channel.send(r.status_code + ' Cat not found :(')
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                if resp.status != 200:
+                    return await message.channel.send('Could not download file...')
+                data = io.BytesIO(await resp.read())
+                await message.channel.send(file=discord.File(data, 'cat.jpg'))
 
 client.run(TOKEN)
