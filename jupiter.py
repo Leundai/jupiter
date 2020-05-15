@@ -6,11 +6,16 @@ import requests
 import io
 import aiohttp
 from dotenv import load_dotenv
+from discord.ext import commands
+import random
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
+
+clientCommand = commands.Bot(command_prefix = '!')
 
 # Whenever the discord bot starts up
 @client.event
@@ -36,31 +41,64 @@ async def on_message(message):
         # Send out a message with the name of the author
         # We are limited to only using local files unless we install some new library
         await message.channel.send(f'Hello!! {message.author.name}', file=discord.File('giphy.gif'))
+        # if it starts with the command !ragecat
     elif message.content.startswith('!ragecat'):
         # I added another gif, its pretty random xD
         await message.channel.send(f'ahh type faster', file=discord.File('cat_typing.gif'))
 
+    # I was just experimenting and wanted to make an 8ball feature.
+    # If it starts with the command !8ball
+    elif message.content.startswith('!8ball'):
+        #here are the responses, we can add more or remove some
+        responses = ["It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Signs point to yes.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "It lowkey do be true",
+        "nah fam",
+        "it aint so",
+        "Hocus pocus, the answer is no",
+        "Outlook not so good.",
+        "Very doubtful."]
+        #here is the output
+        await message.channel.send(f'{random.choice(responses)}')
+
+        # if it starts with the command !cat
     elif message.content.startswith('!cat'):
         # Sometimes random.cat gives us gifs
         url = None
         for _ in range(3):
             try:
+                #this is the part where it gets a photo from the link provided
                 r = requests.get('http://aws.random.cat/meow')
                 r.raise_for_status()
             except:
                 continue
-
+            # accessing the url
             url = r.json()['file']
+            # avoiding the gifs
             if not url.endswith('.gif'):
                 break
             else:
                 return message.channel.send(r.status_code + ' Cat not found :(')
-
+        # aiohttp is the library we downloaded to access pics
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 if resp.status != 200:
                     return await message.channel.send('Could not download file...')
                 data = io.BytesIO(await resp.read())
+                # here is the line which sends the picture
                 await message.channel.send(file=discord.File(data, 'cat.jpg'))
 
 client.run(TOKEN)
