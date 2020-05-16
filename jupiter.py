@@ -6,16 +6,12 @@ import requests
 import io
 import aiohttp
 from dotenv import load_dotenv
-from discord.ext import commands
 import random
-
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
-
-clientCommand = commands.Bot(command_prefix = '!')
 
 # Whenever the discord bot starts up
 @client.event
@@ -74,9 +70,15 @@ async def on_message(message):
         #here is the output
         await message.channel.send(f'{random.choice(responses)}')
 
-        # if it starts with the command !cat
+    # if it starts with the command !cat
     elif message.content.startswith('!cat'):
-        await cat_picture(message);
+        await cat_picture(message)
+    #if it starts with the command !meme
+    elif message.content.startswith('!meme'):
+        await meme_pics(message)
+
+    elif message.content.startswith('!birb'):
+        await birb_picture(message)
 
 async def cat_picture(message):
     # Sometimes random.cat gives us gifs
@@ -102,5 +104,52 @@ async def cat_picture(message):
             else:
                 await message.channel.send(file=discord.File(data, 'cat.jpg'))
 
+async def meme_pics(message):
+    # Sometimes random.cat gives us gifs
+    url = None
+    for _ in range(3):
+        try:
+            #this is the part where it gets a photo from the link provided
+            r = requests.get('https://meme-api.herokuapp.com/gimme')
+            r.raise_for_status()
+        except:
+            continue
+        # accessing the url
+        url = r.json()['url']
+    # aiohttp is the library we downloaded to access pics
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                return await message.channel.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            # here is the line which sends the cat_picture
+            if url.endswith('.png'):
+                await message.channel.send(file=discord.File(data, 'meme.png'))
+            else:
+                await message.channel.send(file=discord.File(data, 'meme.jpg'))
+
+async def birb_picture(message):
+    # Sometimes random.cat gives us gifs
+    url = None
+    for _ in range(3):
+        try:
+            #this is the part where it gets a photo from the link provided
+            r = requests.get('https://some-random-api.ml/img/birb')
+            r.raise_for_status()
+        except:
+            continue
+        # accessing the url
+        url = r.json()['link']
+    # aiohttp is the library we downloaded to access pics
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                return await message.channel.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            # here is the line which sends the picture
+            if url.endswith('.gif'):
+                await message.channel.send(file=discord.File(data, 'birb.gif'))
+            else:
+                await message.channel.send(file=discord.File(data, 'birb.jpg'))
 
 client.run(TOKEN)
