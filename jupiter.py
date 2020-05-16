@@ -76,29 +76,31 @@ async def on_message(message):
 
         # if it starts with the command !cat
     elif message.content.startswith('!cat'):
-        # Sometimes random.cat gives us gifs
-        url = None
-        for _ in range(3):
-            try:
-                #this is the part where it gets a photo from the link provided
-                r = requests.get('http://aws.random.cat/meow')
-                r.raise_for_status()
-            except:
-                continue
-            # accessing the url
-            url = r.json()['file']
-            # avoiding the gifs
-            if not url.endswith('.gif'):
-                break
+        await cat_picture(message);
+
+async def cat_picture(message):
+    # Sometimes random.cat gives us gifs
+    url = None
+    for _ in range(3):
+        try:
+            #this is the part where it gets a photo from the link provided
+            r = requests.get('http://aws.random.cat/meow')
+            r.raise_for_status()
+        except:
+            continue
+        # accessing the url
+        url = r.json()['file']
+    # aiohttp is the library we downloaded to access pics
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                return await message.channel.send('Could not download file...')
+            data = io.BytesIO(await resp.read())
+            # here is the line which sends the picture
+            if url.endswith('.gif'):
+                await message.channel.send(file=discord.File(data, 'cat.gif'))
             else:
-                return message.channel.send(r.status_code + ' Cat not found :(')
-        # aiohttp is the library we downloaded to access pics
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                if resp.status != 200:
-                    return await message.channel.send('Could not download file...')
-                data = io.BytesIO(await resp.read())
-                # here is the line which sends the picture
                 await message.channel.send(file=discord.File(data, 'cat.jpg'))
+
 
 client.run(TOKEN)
