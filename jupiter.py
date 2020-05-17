@@ -42,6 +42,10 @@ async def on_message(message):
         # I added another gif, its pretty random xD
         await message.channel.send(f'ahh type faster', file=discord.File('cat_typing.gif'))
 
+    elif message.content.startswith('!kiss'):
+        # I added another gif, its pretty random xD
+        await message.channel.send(file=discord.File('kiss.gif'))
+
     # I was just experimenting and wanted to make an 8ball feature.
     # If it starts with the command !8ball
     elif message.content.startswith('!8ball'):
