@@ -150,7 +150,7 @@ async def birb_picture(message):
             if resp.status != 200:
                 return await message.channel.send('Could not download file...')
             data = io.BytesIO(await resp.read())
-            # here is the line which sends the picture
+            # here is the line which sends the pic
             if url.endswith('.gif'):
                 await message.channel.send(file=discord.File(data, 'birb.gif'))
             else:
