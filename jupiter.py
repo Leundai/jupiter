@@ -41,7 +41,6 @@ async def on_message(message):
     elif message.content.startswith('!ragecat'):
         # I added another gif, its pretty random xD
         await message.channel.send(f'ahh type faster', file=discord.File('cat_typing.gif'))
-
     # I was just experimenting and wanted to make an 8ball feature.
     # If it starts with the command !8ball
     elif message.content.startswith('!8ball'):
@@ -61,14 +60,40 @@ async def on_message(message):
         "Don't count on it.",
         "My reply is no.",
         "My sources say no.",
-        "It lowkey do be true",
-        "nah fam",
-        "it aint so",
-        "Hocus pocus, the answer is no",
+        "It lowkey do be true.",
+        "nah fam.",
+        "it aint so.",
+        "Hocus pocus, the answer is no.",
         "Outlook not so good.",
         "Very doubtful."]
         #here is the output
         await message.channel.send(f'{random.choice(responses)}')
+    # Music recomendations
+    elif message.content.startswith('!music'):
+        #here are the responses, we can add more or remove some
+        recomendations = ["Space Song by Beach House",
+        "Greek God by Conan Grey",
+        "Daunt by Jelani Aryeh",
+        "Summertime In Paris by Jaden, WILLOW",
+        "MARBLE TEA by Shawn Wasabi",
+        "The List by Moonchild",
+        "Groceries by Mallrat",
+        "Always Afternoon by Medasin, Kathleen",
+        "Big Jet Plane by Angus & Julia Stone",
+        "That I Miss You by Vansire",
+        "Nice Boys by TEMPOREX",
+        "Cigarette Daydreams by Cage the Elephant",
+        "How Was Your Day? by Mellow Fellow, Clairo",
+        "Mountains by Message to Bears",
+        "Imagination by Foster the People",
+        "Spring By Two Door Cinema Club",
+        "Lucy by Still Woozy, ODIE",
+        "Closer by Tegan and Sara",
+        "Sweet Talk by Saint Motel",
+        "Let it Pass by Jakob Ogawa",
+        "You're Not with Me by No Vacation"]
+        #here is the output
+        await message.channel.send(f'{random.choice(recomendations)}')
 
     # if it starts with the command !cat
     elif message.content.startswith('!cat'):
@@ -76,15 +101,14 @@ async def on_message(message):
     #if it starts with the command !meme
     elif message.content.startswith('!meme'):
         await meme_pics(message)
-
+    #if it starts with the command !birb
     elif message.content.startswith('!birb'):
         await birb_picture(message)
-
+    #if it starts with the command !memes. This is an added meme command to allow for more memes.
     elif message.content.startswith('!memes'):
         await meme_pics_two(message)
 
 async def cat_picture(message):
-    # Sometimes random.cat gives us gifs
     url = None
     for _ in range(3):
         try:
@@ -108,7 +132,6 @@ async def cat_picture(message):
                 await message.channel.send(file=discord.File(data, 'cat.jpg'))
 
 async def meme_pics(message):
-    # Sometimes random.cat gives us gifs
     url = None
     for _ in range(3):
         try:
@@ -125,14 +148,13 @@ async def meme_pics(message):
             if resp.status != 200:
                 return await message.channel.send('Could not download file...')
             data = io.BytesIO(await resp.read())
-            # here is the line which sends the cat_picture
+            # here is the line which sends the meme_pics
             if url.endswith('.png'):
                 await message.channel.send(file=discord.File(data, 'meme.png'))
             else:
                 await message.channel.send(file=discord.File(data, 'meme.jpg'))
 
 async def birb_picture(message):
-    # Sometimes random.cat gives us gifs
     url = None
     for _ in range(3):
         try:
@@ -156,7 +178,6 @@ async def birb_picture(message):
                 await message.channel.send(file=discord.File(data, 'birb.jpg'))
 
 async def meme_pics_two(message):
-    # Sometimes random.cat gives us gifs
     url = None
     for _ in range(3):
         try:
@@ -173,7 +194,7 @@ async def meme_pics_two(message):
             if resp.status != 200:
                 return await message.channel.send('Could not download file...')
             data = io.BytesIO(await resp.read())
-            # here is the line which sends the cat_picture
+            # here is the line which sends the meme_pics_two
             if url.endswith('.jpg'):
                 await message.channel.send(file=discord.File(data, 'meme.jpg'))
             else:
