@@ -94,6 +94,16 @@ async def on_message(message):
         "You're Not with Me by No Vacation"]
         #here is the output
         await message.channel.send(f'{random.choice(recomendations)}')
+    elif message.content.startswith('!help'):
+        commands = """```Here are the commands you can use:
+!hello for cool welcome birb gif
+!ragecat for a rage filled  cat gif
+!8ball for a response to a question
+!music for very epic music recomendations
+!cat for random cat pics
+!birb for random bird pics
+!meme and !memes for random memes```"""
+        await message.channel.send(commands)
 
     # if it starts with the command !cat
     elif message.content.startswith('!cat'):
