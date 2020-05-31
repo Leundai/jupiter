@@ -184,8 +184,10 @@ async def birb_picture(message):
             # here is the line which sends the pic
             if url.endswith('.gif'):
                 await message.channel.send(file=discord.File(data, 'birb.gif'))
-            else:
+            elif url.endswith('.jpg'):
                 await message.channel.send(file=discord.File(data, 'birb.jpg'))
+            else:
+                await message.channel.send(file=discord.File(data, 'birb.png'))
 
 async def meme_pics_two(message):
     url = None
